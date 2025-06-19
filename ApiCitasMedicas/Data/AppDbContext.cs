@@ -18,5 +18,9 @@ namespace ApiCitasMedicas.Data
         {
             base.OnModelCreating(modelBuilder);
         }
+
+        public DbSet<Servicio> Servicios { get; set; }
+        public DbSet<EvolucionMedica> Evoluciones { get; set; }
+
     }
 }

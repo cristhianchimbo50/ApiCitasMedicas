@@ -17,7 +17,6 @@ namespace ApiCitasMedicas.Controllers
             _citasFacade = citasFacade;
         }
 
-        // Obtener todas las citas
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Cita>>> GetCitas()
         {
@@ -32,7 +31,7 @@ namespace ApiCitasMedicas.Controllers
             }
         }
 
-        // Crear una cita
+
         [HttpPost]
         public async Task<ActionResult<Cita>> CreateCita([FromBody] Cita cita)
         {

@@ -87,8 +87,39 @@ namespace ApiCitasMedicas.Facades
 
         public async Task<List<Cita>> ObtenerCitas()
         {
-            return await _context.Citas.ToListAsync();
+            return await _context.Citas
+                .Include(c => c.Medico)
+                .Include(c => c.Paciente)
+                .Include(c => c.Servicio)
+                .Select(c => new Cita
+                {
+                    Id = c.Id,
+                    Fecha = c.Fecha,
+                    Hora = c.Hora,
+                    Estado = c.Estado,
+                    MedicoId = c.MedicoId,
+                    PacienteId = c.PacienteId,
+                    ServicioId = c.ServicioId,
+                    Medico = c.Medico == null ? null : new Medico
+                    {
+                        Id = c.Medico.Id,
+                        Nombre = c.Medico.Nombre
+                    },
+                    Paciente = c.Paciente == null ? null : new Paciente
+                    {
+                        Id = c.Paciente.Id,
+                        Nombre = c.Paciente.Nombre
+                    },
+                    Servicio = c.Servicio == null ? null : new Servicio
+                    {
+                        Id = c.Servicio.Id,
+                        Nombre = c.Servicio.Nombre
+                    }
+                })
+                .ToListAsync();
         }
+
+
 
         public async Task<Cita?> ObtenerCitaPorId(int id)
         {
@@ -97,6 +128,7 @@ namespace ApiCitasMedicas.Facades
 
         public async Task<Cita> AgregarCita(Cita cita)
         {
+            cita.Fecha = DateTime.SpecifyKind(cita.Fecha, DateTimeKind.Utc);
             _context.Citas.Add(cita);
             await _context.SaveChangesAsync();
             return cita;
@@ -105,6 +137,8 @@ namespace ApiCitasMedicas.Facades
         public async Task<bool> ActualizarCita(int id, Cita cita)
         {
             if (id != cita.Id) return false;
+
+            cita.Fecha = DateTime.SpecifyKind(cita.Fecha, DateTimeKind.Utc);
 
             _context.Entry(cita).State = EntityState.Modified;
             await _context.SaveChangesAsync();

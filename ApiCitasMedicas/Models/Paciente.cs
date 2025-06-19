@@ -8,5 +8,7 @@
         public int Edad { get; set; }
         public string Telefono { get; set; } = string.Empty;
         public string Correo { get; set; } = string.Empty;
+
+        public ICollection<Cita>? Citas { get; set; }
     }
 }
